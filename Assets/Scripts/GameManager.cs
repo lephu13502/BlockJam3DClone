@@ -3,7 +3,8 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 
-public enum GameState {
+public enum GameState
+{
     Playing,
     LevelCompleted,
     GameOver
@@ -25,7 +26,8 @@ public class GameManager : MonoBehaviour
     MyGrid grid;
     TMPro.TextMeshProUGUI text;
 
-    void Awake() {
+    void Awake()
+    {
         text = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
 
         gameState = GameState.Playing;
@@ -39,41 +41,46 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(GameObject.Find(WallObjectName));
     }
 
-    void Update() {
+    void Update()
+    {
         OnClick();
         CheckLevelState();
     }
 
-    /*void OnDrawGizmos() {
-        if (grid != null) grid.DrawGizmos();
-    }*/
-
-    void CheckLevelState() {
+    void CheckLevelState()
+    {
         if (gameState == GameState.Playing) return;
 
-        if (gameState == GameState.LevelCompleted) {
+        if (gameState == GameState.LevelCompleted)
+        {
             LevelManager.NextLevel();
             grid = LevelManager.DesignLevel();
             text.text = "Level: " + LevelManager.Level;
             gameState = GameState.Playing;
             SceneManager.LoadSceneAsync(2);
-        } else {
+        }
+        else
+        {
             grid = LevelManager.DesignLevel();
             gameState = GameState.Playing;
             SceneManager.LoadSceneAsync(3);
         }
     }
 
-    public void OnClick() {
+    public void OnClick()
+    {
         Ray ray;
         RaycastHit hit;
         Character character;
 
-        if (Input.GetMouseButtonDown(0) && gameState == GameState.Playing) {
+        if (Input.GetMouseButtonDown(0) && gameState == GameState.Playing)
+        {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit)) {
+            if (Physics.Raycast(ray, out hit))
+            {
                 character = hit.collider.gameObject.GetComponent<Character>();
-                if (character != null && character.Moveable && character.path == null && !character.IsStacking) {
+                if (character != null && character.Moveable && character.path == null && !character.IsStacking)
+                {
                     character.path = grid.FindPath(character.node.worldPosition, grid.BottomNode.worldPosition);
                 }
             }
