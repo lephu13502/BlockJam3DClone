@@ -152,18 +152,4 @@ public class MyGrid
     {
         return pathFinding.FindPath(startPos, targetPos);
     }
-
-    public void DrawGizmos()
-    {
-        Gizmos.DrawWireCube(position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
-
-        for (int x = 0; x < grid.GetLength(0); x++)
-        {
-            for (int y = 0; y < grid.GetLength(1); y++)
-            {
-                Gizmos.color = grid[x, y].walkable ? Color.white : Color.red;
-                Gizmos.DrawCube(grid[x, y].worldPosition, Vector3.one * nodeDiameter);
-            }
-        }
-    }
 }
