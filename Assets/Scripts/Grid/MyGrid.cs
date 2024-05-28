@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
 [Serializable]
-public struct GridVars {
+public struct GridVars
+{
     public Vector2 gridWorldSize; // Size of the grid
     public LayerMask unwalkableMask; // LayerMask to determine what is unwalkable
     public float nodeRadius; // Radius of the node
@@ -25,20 +25,25 @@ public class MyGrid
     PathFinding pathFinding; // PathFinding object
 
     Node bottomNode;
-    public Node BottomNode {
-        get {
+    public Node BottomNode
+    {
+        get
+        {
             if (bottomNode == null) bottomNode = GetBottomNode();
             return bottomNode;
         }
     }
 
-    public Vector2 Size {
-        get {
+    public Vector2 Size
+    {
+        get
+        {
             return new Vector2(gridSizeX, gridSizeY);
         }
     }
 
-    public MyGrid(GridVars gridVars) {
+    public MyGrid(GridVars gridVars)
+    {
         gridWorldSize = gridVars.gridWorldSize;
         unwalkableMask = gridVars.unwalkableMask;
         nodeRadius = gridVars.nodeRadius;
@@ -48,7 +53,8 @@ public class MyGrid
         pathFinding = new PathFinding(this);
     }
 
-    public static MyGrid CreateNewGrid(Vector2 gridCount, Vector3 position) {
+    public static MyGrid CreateNewGrid(Vector2 gridCount, Vector3 position)
+    {
         GridVars gridVars;
 
         gridVars = new GridVars();
@@ -59,10 +65,11 @@ public class MyGrid
         return new MyGrid(gridVars);
     }
 
-    void CreateGrid() {
+    void CreateGrid()
+    {
         Vector3 worldBottomLeft;
         Vector3 worldPoint;
-        bool    walkable;
+        bool walkable;
 
         nodeDiameter = nodeRadius * 2;
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
@@ -72,8 +79,10 @@ public class MyGrid
         grid = new Node[gridSizeX, gridSizeY];
 
         worldBottomLeft = position - (Vector3.right * gridWorldSize.x / 2) - (Vector3.forward * gridWorldSize.y / 2);
-        for (int x = 0; x < gridSizeX; x++) {
-            for (int y = 0; y < gridSizeY; y++) {
+        for (int x = 0; x < gridSizeX; x++)
+        {
+            for (int y = 0; y < gridSizeY; y++)
+            {
                 worldPoint = worldBottomLeft + (Vector3.right * ((x * nodeDiameter) + nodeRadius)) + (Vector3.forward * ((y * nodeDiameter) + nodeRadius));
                 walkable = !Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask);
                 grid[x, y] = new Node(walkable, worldPoint, x, y);
@@ -81,17 +90,20 @@ public class MyGrid
         }
     }
 
-    public Node GetNode(int x, int y) {
+    public Node GetNode(int x, int y)
+    {
         return grid[x, y];
     }
 
-    Node GetBottomNode() {
+    Node GetBottomNode()
+    {
         int x, y;
 
         y = 0;
         x = Mathf.RoundToInt(gridSizeX / 2);
 
-        for (int i = 0; i < gridSizeX / 2; i++) {
+        for (int i = 0; i < gridSizeX / 2; i++)
+        {
             if (grid[x - i, y].walkable) return grid[x - i, y];
             if (grid[x + i, y].walkable) return grid[x + i, y];
         }
@@ -99,12 +111,15 @@ public class MyGrid
         return grid[0, 0];
     }
 
-    public List<Node> GetNeighbours(Node node) {
+    public List<Node> GetNeighbours(Node node)
+    {
         List<Node> neigbours = new List<Node>();
         int checkX, checkY;
 
-        for (int x = -1; x <= 1; x++) {
-            for (int y = -1; y <= 1; y++) {
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
                 if (x == 0 && y == 0) continue;
                 if (x != 0 && y != 0) continue; // If the node is diagonal to the current node, skip it (we don't want diagonal movement)
                 checkX = x + node.gridX;
@@ -118,7 +133,8 @@ public class MyGrid
         return neigbours;
     }
 
-    public Node NodeFromWorldPoint(Vector3 worldPosition) {
+    public Node NodeFromWorldPoint(Vector3 worldPosition)
+    {
         float x, y;
 
         x = (worldPosition.x + gridWorldSize.x / 2) / gridWorldSize.x;
@@ -132,15 +148,19 @@ public class MyGrid
 
         return grid[Mathf.RoundToInt(x), Mathf.RoundToInt(y)];
     }
-    public List<Node> FindPath(Vector3 startPos, Vector3 targetPos) {
+    public List<Node> FindPath(Vector3 startPos, Vector3 targetPos)
+    {
         return pathFinding.FindPath(startPos, targetPos);
     }
 
-    public void DrawGizmos() {
+    public void DrawGizmos()
+    {
         Gizmos.DrawWireCube(position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
 
-        for (int x = 0; x < grid.GetLength(0); x++) {
-            for (int y = 0; y < grid.GetLength(1); y++) {
+        for (int x = 0; x < grid.GetLength(0); x++)
+        {
+            for (int y = 0; y < grid.GetLength(1); y++)
+            {
                 Gizmos.color = grid[x, y].walkable ? Color.white : Color.red;
                 Gizmos.DrawCube(grid[x, y].worldPosition, Vector3.one * nodeDiameter);
             }

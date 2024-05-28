@@ -19,11 +19,11 @@ public class LevelManager
     public static void NextLevel()
     {
         level++;
-        if (level <= 3)
+        if (level <= 6) // Update this to reflect the new total number of levels
         {
             playingLevel = level;
         }
-        else playingLevel = Random.Range(1, 3);
+        else playingLevel = Random.Range(1, 4); // Update the range if you want random levels after all have been played
     }
 
     public static MyGrid DesignLevel()
@@ -46,6 +46,16 @@ public class LevelManager
             case 3:
                 Level3(grids[playingLevel - 1]);
                 break;
+            // Add new cases for the additional levels
+            case 4:
+                Level4(grids[playingLevel - 1]);
+                break;
+            case 5:
+                Level5(grids[playingLevel - 1]);
+                break;
+            case 6:
+                Level6(grids[playingLevel - 1]);
+                break;
             default:
                 break;
         }
@@ -54,8 +64,71 @@ public class LevelManager
         ObjectManager.Instance.CheckObjects(grids[playingLevel - 1]);
         return grids[playingLevel - 1];
     }
-
     static void Level1(MyGrid grid)
+    {
+        // Create the walls around the grid
+        PutWallsToAround(grid);
+
+        // Place blue characters in a horizontal line in the middle
+        for (int x = 2; x <= 4; x++)
+        {
+            ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(x, 2), Color.blue);
+        }
+        //Place yello characters in a horizontal line in the middle
+        for (int x = 2; x <= 4; x++)
+        {
+            ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(x, 1), Color.yellow);
+        }
+    }
+    static void Level2(MyGrid grid)
+    {
+        int x, y;
+
+
+        PutWallsToAround(grid);
+        y = (int)grid.Size.y - 2;
+
+        //first row
+        x = 0;
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), Color.blue).InBarrier = false;
+        ObjectManager.Instance.AllocateObject<Component>(grid.GetNode(++x, y), WallColor);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), Color.yellow).InBarrier = false;
+        ObjectManager.Instance.AllocateObject<Component>(grid.GetNode(++x, y), WallColor);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), Color.red).InBarrier = false;
+
+        //second row
+        x = 0;
+        y--;
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), Color.blue).InBarrier = false;
+        ObjectManager.Instance.AllocateObject<Component>(grid.GetNode(++x, y), WallColor);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), Color.yellow).InBarrier = false;
+        ObjectManager.Instance.AllocateObject<Component>(grid.GetNode(++x, y), WallColor);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), Color.red).InBarrier = false;
+
+        //second row
+        x = 0;
+        y--;
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), Color.blue).InBarrier = false;
+        ObjectManager.Instance.AllocateObject<Component>(grid.GetNode(++x, y), WallColor);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), Color.yellow).InBarrier = false;
+        ObjectManager.Instance.AllocateObject<Component>(grid.GetNode(++x, y), WallColor);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), Color.red).InBarrier = false;
+    }
+
+    static void Level3(MyGrid grid)
+    {
+
+        PutWallsToAround(grid);
+
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(1, 2), Color.red);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(2, 2), Color.yellow);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(3, 2), Color.red);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(1, 1), Color.yellow);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(2, 1), Color.red);
+        ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(3, 1), Color.yellow);
+    }
+
+    static void Level4(MyGrid grid)
     {
         int x, y;
         List<Color> colors;
@@ -90,7 +163,7 @@ public class LevelManager
         ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), GetColor(colors));
     }
 
-    static void Level2(MyGrid grid)
+    static void Level5(MyGrid grid)
     {
         int x, y;
         List<Color> colors;
@@ -125,13 +198,13 @@ public class LevelManager
         ObjectManager.Instance.AllocateObject<Character>(grid.GetNode(++x, y), GetColor(colors));
     }
 
-    static void Level3(MyGrid grid)
+    static void Level6(MyGrid grid)
     {
         int x, y;
         List<Color> colors;
 
         colors = new List<Color>();
-        FillColorList(colors, Color.red, Color.red, Color.yellow, Color.yellow, Color.yellow, Color.blue, Color.blue, Color.blue);
+        FillColorList(colors, Color.red, Color.red, Color.yellow, Color.yellow, Color.cyan, Color.blue, Color.blue, Color.cyan);
 
         PutWallsToAround(grid);
         y = (int)grid.Size.y - 2;
@@ -190,11 +263,13 @@ public class LevelManager
         Transform transform;
 
         transform = GameObject.Find("GameManager").transform;
-        grids = new MyGrid[3];
-
-        grids[0] = MyGrid.CreateNewGrid(new Vector2(7, 5), transform.position);
-        grids[1] = MyGrid.CreateNewGrid(new Vector2(6, 5), transform.position);
-        grids[2] = MyGrid.CreateNewGrid(new Vector2(7, 7), transform.position);
+        grids = new MyGrid[6];
+        grids[0] = MyGrid.CreateNewGrid(new Vector2(7, 5), transform.position); // Level 1: 7x5 grid
+        grids[1] = MyGrid.CreateNewGrid(new Vector2(7, 5), transform.position); // Level 2: 7x5 grid
+        grids[2] = MyGrid.CreateNewGrid(new Vector2(5, 4), transform.position); // Level 3: 5x4 grid
+        grids[3] = MyGrid.CreateNewGrid(new Vector2(7, 5), transform.position);
+        grids[4] = MyGrid.CreateNewGrid(new Vector2(6, 5), transform.position);
+        grids[5] = MyGrid.CreateNewGrid(new Vector2(7, 7), transform.position);
     }
 
     static void ResetGrid()
